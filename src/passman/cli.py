@@ -2,7 +2,7 @@ import click
 import db
 import tabulate
 import sys
-
+import pyperclip
 
 @click.group(
     context_settings=dict(help_option_names=["-h", "--help"]),
@@ -49,10 +49,9 @@ def add(service_name, generate):
     Prompts user to confirm the new entry and save it into database.
     """
     if db.validate_service_name(service_name) is True:
-        click.echo(
-            f"An entry for '{service_name}' already exists. Please use a different name."
-        )
+        click.echo(f"An entry for '{service_name}' already exists. Please use a different name.")
         sys.exit(0)
+
     username = click.prompt("Enter username/email", type=str)
 
     if generate:
@@ -115,6 +114,8 @@ def view(service_name):
             tablefmt="rounded_grid",
         )
         click.echo(display_table)
+        pyperclip.copy(row[0][2]) # copy password to clipboard
+        click.secho(f"The password for '{service_name}' has been copied to your clipboard!", fg="yellow", bold=True)
     except Exception as e:
         click.echo(f"DB ERROR: {e}")
         click.Abort()
@@ -268,6 +269,9 @@ def delete(service_name):
     db.validate_service_name(service_name)
     if click.confirm(f"Ready to securely delete the entry for: {service_name}?"):
         try:
+            if db.validate_service_name(service_name) is False:
+                click.echo(f"An entry for '{service_name}' doesn't exist. Please check the service name and try again.")
+                sys.exit(0)
             db.delete_entry(service_name)
             click.echo(f"{service_name} successfully deleted.")
         except Exception as e:
