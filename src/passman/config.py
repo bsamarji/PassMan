@@ -18,13 +18,12 @@ SQL_CREATE_TABLE = """
 CREATE TABLE IF NOT EXISTS entries (
     id INTEGER PRIMARY KEY,
     service_name TEXT NOT NULL UNIQUE,
-    username BLOB NOT NULL,
-    password BLOB NOT NULL,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL,
     url TEXT NULL,
     note TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    iv BLOB NOT NULL
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 """
 
@@ -34,11 +33,9 @@ INSERT INTO entries (
     username,
     password,
     url,
-    note,
-    iv
+    note
     )
 VALUES (
-    ?,
     ?,
     ?,
     ?,

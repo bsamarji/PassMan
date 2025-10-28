@@ -88,7 +88,7 @@ def add(service_name, generate):
     if click.confirm(click.style(f"Ready to securely save the entry for '{service_name}'?", **COLOR_PROMPT_LIGHT)):
         try:
             # Placeholder IV of 1, should be changed when encryption is implemented
-            db.add_entry(service_name, username, password, url, note, 1)
+            db.add_entry(service_name, username, password, url, note)
             # Success Message: Green and bold
             click.secho(f"Entry for '{service_name}' saved successfully.", **COLOR_SUCCESS)
         except Exception as e:

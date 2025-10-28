@@ -1,4 +1,3 @@
-#import sqlite3
 import sqlcipher3.dbapi2 as sqlite3
 from pathlib import Path
 import click
@@ -36,14 +35,14 @@ def initialise_db():
         click.secho(f"Could not initialise the database. Details: {e}", err=True, fg="red")
 
 
-def add_entry(service_name, username, password, url, note, iv):
+def add_entry(service_name, username, password, url, note):
     """
     Insert a new entry into the database.
     """
     try:
         with get_db_connection() as conn:
             conn.execute(
-                SQL_INSERT_ENTRY, (service_name, username, password, url, note, iv)
+                SQL_INSERT_ENTRY, (service_name, username, password, url, note)
             )
     except sqlite3.Error as e:
         raise Exception(f"Could not insert entry for {service_name}. Details: {e}")
