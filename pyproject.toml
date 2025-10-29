@@ -1,5 +1,5 @@
 [project]
-name = "PassMaster"
+name = "PassMan"
 version = "0.1.0"
 description = "Secure password manager cli app"
 readme = "README.md"

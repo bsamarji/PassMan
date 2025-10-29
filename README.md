@@ -1,3 +1,3 @@
-# Pass Master
+# PassMan
 
-Secure password manager CLI tool.
+Secure password manager CLI app.
