@@ -13,6 +13,9 @@ COLOR_SENSITIVE_DATA = dict(fg="green")  # Highly sensitive data (passwords in v
 DB_FILE_NAME = "passman.db"
 DB_DIR_NAME = ".passman"
 
+# --- SECURITY FILE NAMES ---
+SALT_FILE_NAME = "passman.salt"
+
 # --- DB QUERIES ---
 SQL_CREATE_TABLE = """
 CREATE TABLE IF NOT EXISTS entries (
