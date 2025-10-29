@@ -1,10 +1,10 @@
 import base64
 import os
 from pathlib import Path
-from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from .config import DB_DIR_NAME, SALT_FILE_NAME
+from .config import DB_DIR_NAME, SALT_FILE_NAME, COLOR_PROMPT_BOLD
+import click
 
 def generate_salt_file():
     """
@@ -43,10 +43,22 @@ def key_derivation_function(salt):
     )
     return kdf
 
-def generate_encryption_key(kdf, master_password):
+def login():
     """
-    Create an encryption key using the given kdf and master password.
-    Returns the encryption key.
+    Login to the password manager.
+    Returns the master password.
+    """
+    master_password = click.prompt(
+        click.style("Please enter your master password", **COLOR_PROMPT_BOLD),
+        hide_input=True,
+        confirmation_prompt=True,
+    )
+    return master_password
+
+def generate_derived_key(kdf, master_password):
+    """
+    Create derived key using the given kdf and master password.
+    Returns the derived key.
     """
     key = base64.urlsafe_b64encode(kdf.derive(master_password))
     return key
