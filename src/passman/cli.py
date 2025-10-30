@@ -8,6 +8,7 @@ from .config import (COLOR_SENSITIVE_DATA, COLOR_PRIMARY_DATA, COLOR_WARNING, CO
                      COLOR_HEADER, COLOR_PROMPT_BOLD, COLOR_PROMPT_LIGHT, COLOR_SUCCESS)
 from .config import DB_DIR_NAME, SECURITY_DIR_NAME, PEK_FILE_NAME
 from .config import COMMANDS_VALID_NO_ARGS
+from .password_generator import password_generator
 
 # TODO: Create password generator function
 # TODO: Create master password update function
@@ -126,6 +127,9 @@ def logout():
       # Generate password option - prompts for username, URL, and note. 
       $ passman add website_name -g
       \b
+      # Generate password option without special chars - automatically generates a strong new password:
+      $ passman update github -g -w
+      \b
     NOTE: Using -g will automatically generate a strong password.
     \b
     """
@@ -135,10 +139,18 @@ def logout():
     "-g",
     "--generate",
     is_flag=True,
-    help="Generate a strong password instead of prompting for user input.",
+    help="Generate a cryptographically strong password instead of prompting for user input. "
+         "By default it includes special characters. "
+         "Use the -w option to generate a strong password without special characters.",
+)
+@click.option(
+    "-w",
+    "--without-special-chars",
+    is_flag=True,
+    help="Specify if the password should be generated without special characters. Only works with the -g option.",
 )
 @click.pass_context
-def add(ctx, service_name, generate):
+def add(ctx, service_name, generate, without_special_chars):
     """
     Creates a new entry in the database.
     Prompts user for username/email, password, url and note.
@@ -156,7 +168,7 @@ def add(ctx, service_name, generate):
     username = click.prompt(click.style("Enter username/email", **COLOR_PROMPT_BOLD), type=str)
 
     if generate:
-        password = "generatedTestPassword123"
+        password = password_generator(without_special_chars=without_special_chars)
         click.secho(f"Generated password for '{service_name}': {password}", **COLOR_SUCCESS)
     else:
         password = click.prompt(
@@ -390,6 +402,9 @@ def list_entries(ctx):
       # Generate password option - automatically generates a strong new password:
       $ passman update github -g
       \b
+      # Generate password option without special chars - automatically generates a strong new password:
+      $ passman update github -g -w
+      \b
       NOTE: This command currently only updates the password field.
       \b
     """,
@@ -399,10 +414,18 @@ def list_entries(ctx):
     "-g",
     "--generate",
     is_flag=True,
-    help="Generate a strong password instead of prompting for manual entry.",
+    help="Generate a cryptographically strong password instead of prompting for user input. "
+         "By default it includes special characters. "
+         "Use the -w option to generate a strong password without special characters.",
+)
+@click.option(
+    "-w",
+    "--without-special-chars",
+    is_flag=True,
+    help="Specify if the password should be generated without special characters. Only works with the -g option.",
 )
 @click.pass_context
-def update(ctx, service_name, generate):
+def update(ctx, service_name, generate, without_special_chars):
     """
     Update the password for an entry in the database.
     Prompts user to confirm password update.
@@ -417,7 +440,7 @@ def update(ctx, service_name, generate):
         sys.exit(0)
 
     if generate:
-        password = "updatedPassword123"
+        password = password_generator(without_special_chars=without_special_chars)
         click.secho(f"Generated new password for '{service_name}': {password}", **COLOR_SUCCESS)
     else:
         password = click.prompt(
