@@ -10,7 +10,8 @@ from .config import DB_DIR_NAME, SECURITY_DIR_NAME, PEK_FILE_NAME
 from .config import COMMANDS_VALID_NO_ARGS
 from .password_generator import password_generator
 
-# TODO: Create master password update function
+# TODO: Revise CLI messages
+# TODO: Write README.md
 
 def authenticate_from_session(ctx):
     """
@@ -92,7 +93,8 @@ def login():
 
     if not pek_file.exists():
         # First time setup
-        session_pek = security.generate_and_encrypt_pek(derived_key=kek)
+        pek = security.generate_pek()
+        session_pek = security.encrypt_pek(derived_key=kek, pek=pek)
     else:
         # Subsequent login
         session_pek = security.retrieve_and_decrypt_pek(derived_key=kek)
@@ -116,6 +118,36 @@ def logout():
         click.secho("\nVault LOCKED.", **COLOR_SUCCESS)
     else:
         click.secho("\nVault was already locked.", **COLOR_WARNING)
+
+
+@cli.command(
+    name="change-master",
+    help="Changes the master password for the user. "
+         "Prompts the user for their current master password, and then their new master password.",
+)
+def change_master_password():
+    """
+    Changes the master password for the user.
+    """
+    # 1. Derive the KEK from the current master password
+    salt = security.retrieve_salt()
+    kdf = security.key_derivation_function(salt=salt)
+    master_password = security.login()
+    kek = security.generate_derived_key(kdf=kdf, master_password=master_password)
+
+    # 2. Retrieve and decrypt the PEK
+    pek = security.retrieve_and_decrypt_pek(derived_key=kek)
+
+    # 3. Prompt user for a new master password
+    new_master_password = security.prompt_new_master_password()
+
+    # 4. Create a new KEK from the new password
+    kdf = security.key_derivation_function(salt=salt)
+    new_kek = security.generate_derived_key(kdf=kdf, master_password=new_master_password)
+
+    # 5. Re-encrypt pek with new KEK and write pek to disk
+    security.encrypt_pek(derived_key=new_kek, pek=pek)
+
 
 @cli.command(
     help="Creates a new password entry. Prompts user for username/email, password, URL, and note.",

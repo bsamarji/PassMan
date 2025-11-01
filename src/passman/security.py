@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .config import DB_DIR_NAME, SECURITY_DIR_NAME, SALT_FILE_NAME, PEK_FILE_NAME
-from .config import COLOR_WARNING, COLOR_ERROR, COLOR_PROMPT_BOLD
+from .config import COLOR_WARNING, COLOR_ERROR, COLOR_PROMPT_BOLD, COLOR_PROMPT_LIGHT, COLOR_SUCCESS
 import click
 import sys
 
@@ -115,6 +115,30 @@ def login():
         return master_password
 
 
+def prompt_new_master_password():
+    """
+    Prompts the user for a new master password.
+
+    Returns:
+         The new master password (str).
+    """
+    master_password = click.prompt(
+        click.style("\nPlease enter your new master password", **COLOR_PROMPT_BOLD),
+        hide_input=True,
+        confirmation_prompt=True,
+    )
+    # Check for empty password
+    if not master_password:
+        click.secho("Master password cannot be empty.", **COLOR_ERROR)
+        sys.exit(1)
+    if click.confirm(click.style("Ready to save your new master password?", **COLOR_PROMPT_LIGHT)):
+        click.secho("Successfully updated master password!", **COLOR_SUCCESS)
+    else:
+        click.secho("Operation cancelled.", **COLOR_WARNING)
+        click.Abort()
+    return master_password
+
+
 def generate_derived_key(kdf, master_password):
     """
     Create derived key using the given kdf and master password.
@@ -130,14 +154,23 @@ def generate_derived_key(kdf, master_password):
     return key
 
 
-def generate_and_encrypt_pek(derived_key):
+def generate_pek():
     """
-    Generates a 32-byte Primary Encryption Key (PEK) and locks it
+    Generate a cryptographically strong PEK.
+    """
+    pek = os.urandom(32)
+    return pek
+
+
+def encrypt_pek(derived_key, pek):
+    """
+    Takes Primary Encryption Key (PEK) and locks it
     by encrypting it with the derived key (Key Encryption Key - KEK) using Fernet.
     Stores the encrypted PEK to disk.
 
     Args:
         derived_key (bytes): The 44-byte base64url-encoded key from the KDF.
+        pek (bytes): The PEK to encrypt
 
     Returns:
         The decrypted PEK (bytes) or None on failure.
@@ -151,8 +184,6 @@ def generate_and_encrypt_pek(derived_key):
     except ValueError as e:
         click.secho(f"Internal error: Invalid Fernet key generated: {e}", **COLOR_ERROR)
         sys.exit(1)
-
-    pek = os.urandom(32)
 
     # 1. Encrypt the PEK
     try:
