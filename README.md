@@ -85,6 +85,7 @@ On macOS and Linux, you'll update your shell's configuration file (usually `.zsh
 ##### Windows (PowerShell)
 
 On Windows, you need to update your systems environment variables. This can be done through the GUI, but below I've posted instructions for doing this through the command line.
+Please ensure you're running Powershell in **Administrator Mode**.
 
 1. Ensure you have moved the extracted `passman` folder to a permanent, simple location, for example: `C:\Tools\PassMan`.
 
@@ -102,8 +103,13 @@ On Windows, you need to update your systems environment variables. This can be d
     "User"
     )
    ```
+
+4. **Exclude the Dir From Windows Defender:** Windows defender massively hampers performance of this executable as it scans the directory everytime which can take minutes. To avoid this, please exclude it from defender scans:
+    ```powershell
+   Add-MpPreference -ExclusionPath $PassManPath
+   ```
    
-4. **Verify:** **Close and reopen** any active Command Prompt or PowerShell windows, and then run `passman --help`.
+5. **Verify:** **Close and reopen** any active Command Prompt or PowerShell windows, and then run `passman --help`.
 
 ### Option 2: Local Development Install (Recommended for Developers/Contributors)
 
