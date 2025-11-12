@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "v1.0.0"
+        description: "Release Tag (e.g., v1.0.0)"
         required: true
 
 jobs:
@@ -27,10 +27,13 @@ jobs:
       - name: Install dependencies
         run: pip install .
 
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
       - name: Build executable
         run: pyinstaller --onedir --name passman src/passman/cli.py
 
-      - name: Rename executable
+      - name: Rename build directory
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             mv dist/passman dist/passman-windows
@@ -50,6 +53,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event.inputs.version }}
 
     steps:
       - name: Checkout repository
@@ -60,11 +65,20 @@ jobs:
         with:
           merge-multiple: true
 
-      - name: List downloaded files (Debugging)
-        run: ls -R
-
       - name: Make files executable (Linux/Mac)
         run: chmod -R a+x passman-* || true
+
+      - name: Compress binaries for release (CRITICAL FIX)
+        run: |
+          echo "Compressing Linux binary..."
+          tar -czvf passman-$RELEASE_TAG-linux.tar.gz passman-linux
+
+          echo "Compressing macOS binary..."
+          tar -czvf passman-$RELEASE_TAG-macos.tar.gz passman-macos
+
+          echo "Compressing Windows binary..."
+          cd passman-windows
+          zip -r ../passman-$RELEASE_TAG-windows.zip ./*
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -74,6 +88,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            passman-linux
-            passman-windows.exe
-            passman-macos
+            passman-${{ github.event.inputs.version }}-linux.tar.gz
+            passman-${{ github.event.inputs.version }}-macos.tar.gz
+            passman-${{ github.event.inputs.version }}-windows.zip
