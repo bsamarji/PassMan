@@ -33,6 +33,36 @@ allowing developers to manage credentials without switching away from the comman
 * **Password Generation:** Integrated cryptographically secure password generator.
 * **Colour Scheme:** High contrast colour scheme to create visually appealing and informative outputs.
 
+### The PassMan Workflow
+
+#### Bring Up the Docs
+
+![help](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnpkMG5tZXhvcmljNDB5dnczazBobmQ5cHE3NG54cWw0M3d1am5hYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ArvI7knOKwOsS5fVnP/giphy.gif)
+
+#### Login to unlock the vault and create an active session in your terminal
+
+![login](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd25wa3hiNW41NzNlMGN3NzFkZ3R6czc2NGNnaXNoZmV1cTY1eHB6cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qyBUSUbXRGlN9GiwDb/giphy.gif)
+
+#### Add a new entry
+
+![add](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnI3N2M2azViM3ZleTVkMXI2N3NibDlmcnZncWZmcjNjbTQ2cTRsMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Pyk7NfGVJtnl45SglZ/giphy.gif)
+
+#### View an existing entry and copy the password to your clipboard
+
+![view](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHFndjRqejN5bWxuYjN4bXoxczY2Zjc3bzUxMmdvMGV0cGI1M3NnYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qSSflaPoo5P0K5yfD6/giphy.gif)
+
+#### Update the password for an existing entry
+
+![update](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTVwYWMxOG9qaml2Y3I1bDV5OGFzemI1YXhrbnA2dml1OHZhMXhmMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xme4xhNyP8GPK8lv9p/giphy.gif)
+
+#### Delete an existing entry
+
+![delete](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTBnZGJ1a3hvMXAyNzB2NDJtMGtkZm1qMmd0aXM1MzRvaWhzNnNyZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/svyllOVirXYneqrV1z/giphy.gif)
+
+#### Logout and lock the vault
+
+![logout](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExazU2ODgzandyMmpubjExNmVpcWphcjJlMDdxMm9tNHp6NjRlNjZnbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Macyoj6v0mRaqB78vm/giphy.gif)
+
 ## Installation
 
 ### Option 1: Download the binary from GitHub Releases (Recommended)
